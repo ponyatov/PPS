@@ -9,5 +9,6 @@
 	],
 	"orientation": "portrait",
 	"background_color": "darkslategrey",
+	"theme_color": "darkslategrey",
 	"display": "standalone"
 }
