@@ -6,7 +6,7 @@
 
 <style>
 * {
-	border-style: solid; border-color: darkgreen;
+	border-style: solid; border-color: darkgreen; border-width: thin;
 	font-family: monospace, monospace; font-size: 3vh;
 	background: black; color: lightgreen;
 }
@@ -17,7 +17,8 @@ textarea,button { width: 100%; }
 
 #cmd { position: absolute; bottom: 0; width: 100%; margin: 0; }
 
-#go { background: darkslategray; height: 11vmin; }
+#go { background: darkslategray; height: 11vmin; border-width: thick; }
+
 </style>
 
 <pre id=log># log</pre>
@@ -58,10 +59,14 @@ window.onload = function() {
 //	stack = document.getElementById("stack")
 //	words = document.getElementById("words")
 //	pad   = document.getElementById("pad"  )
+	if (window.navigator.onLine) online(); else offline(); // fix on reload
 	update();
 }
 
-window.onoffline = function() { pad.style.borderColor = "red"  ; }
-window.ononline  = function() { pad.style.borderColor = "green"; }
+function offline() { go.style.borderColor = "darkred" }
+window.onoffline = offline
+
+function  online() { go.style.borderColor = "green"   }
+window.ononline  = online
 
 </script>
