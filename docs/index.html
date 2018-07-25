@@ -1,4 +1,4 @@
-<!--html manifest="app.cache"-->
+<!-- html manifest="app.cache"-->
 
 <link rel="icon" type="image/png" href="planning.png" />
 
@@ -24,34 +24,41 @@ textarea,button { width: 100%; }
 <pre id=stack># stack</pre>
 <pre id=words># words</pre>
 <div id=cmd>
+<textarea id=peg rows=5># PEG grammar</textarea>
 <textarea id=pad rows=5># console</textarea>
 <button id=go onclick="INTERPRET(pad.value);">GO</button>
 </div>
 
-<script src="PEG.js"/>
+<script src="PEG.js"></script>
 <script>
 function INTERPRET(SRC) {
 	console.log(SRC)
 }
 
-//var S = []
-var stack = nil
+function head(obj) { return "<"+obj.type+":"+obj.value+">"; }
+function dump(obj) { return head(obj); }
 
-//var W = []
-var words = nil
+function Sym(T,V) {
+	return {type:T, value:V, attr:{}, nest:[], dump:dump }
+}
 
-var pad = nil
+function Stack(name) { return Sym('stack',name); }
+function Voc(name) { return Sym('voc',name); }
 
-//function update() {
-//	console.log(S)
-	//stack.value = S.toString();
-//}
+var S = Stack('data') 
+
+var W = Voc('global')
+
+function update() {
+	stack.innerText = S.dump(S)
+	words.innerText = W.dump(W)
+}
 
 window.onload = function() {
-	stack = document.getElementById("stack")
-	words = document.getElementById("words")
-	pad   = document.getElementById("pad"  )
-	dsads();
+//	stack = document.getElementById("stack")
+//	words = document.getElementById("words")
+//	pad   = document.getElementById("pad"  )
+	update();
 }
 
 window.onoffline = function() { pad.style.borderColor = "red"  ; }
