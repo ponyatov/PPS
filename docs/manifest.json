@@ -1,0 +1,13 @@
+{
+	"short_name": "PPS/js",
+	"name": "Personal Planning System /js",
+	"icons": [
+		{
+			"src": "planning.png",
+			"type": "image/png"
+		}
+	],
+	"orientation": "portrait",
+	"background_color": "darkslategrey",
+	"display": "standalone"
+}
