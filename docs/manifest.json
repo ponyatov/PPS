@@ -9,5 +9,5 @@
 	],
 	"orientation": "portrait",
 	"background_color": "darkslategrey",
-	"display": "fullscreen"
+	"display": "standalone"
 }
