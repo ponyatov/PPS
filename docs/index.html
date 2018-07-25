@@ -1,10 +1,12 @@
+<html manifest="app.cache">
+
 <link rel="icon" type="image/png" href="planning.png" />
 
 <title>PPS/js</title>
 
 <style>
 * {
-	border-style: solid;
+	border-style: solid; border-color: darkgreen;
 	font-family: monospace, monospace; font-size: 3vh;
 	background: black; color: lightgreen;
 }
@@ -20,6 +22,13 @@ textarea,button { width: 100%; }
 
 <pre id=log># log</pre>
 <div id=cmd>
-<textarea id=con rows=5># console</textarea>
-<button id=go>GO</button>
+<textarea id=pad rows=5># console</textarea>
+<button id=go onclick="INTERPRET(pad.value);">GO</button>
 </div>
+
+<script src="PEG.js"/>
+<script>
+function INTERPRET(SRC) {
+	console.log(SRC)
+}
+</script>
