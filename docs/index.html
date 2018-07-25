@@ -21,6 +21,8 @@ textarea,button { width: 100%; }
 </style>
 
 <pre id=log># log</pre>
+<pre id=stack># stack</pre>
+<pre id=words># words</pre>
 <div id=cmd>
 <textarea id=pad rows=5># console</textarea>
 <button id=go onclick="INTERPRET(pad.value);">GO</button>
@@ -31,4 +33,18 @@ textarea,button { width: 100%; }
 function INTERPRET(SRC) {
 	console.log(SRC)
 }
+
+var stack = nil;
+var words = nil
+var pad = nil;
+
+window.onload = function() {
+	stack = document.getElementById("stack");
+	words = document.getElementById("words");
+	pad   = document.getElementById("pad"  );
+}
+
+window.onoffline = function() { pad.style.borderColor = "red"  ; }
+window.ononline  = function() { pad.style.borderColor = "green"; }
+
 </script>
