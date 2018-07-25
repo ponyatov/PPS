@@ -30,25 +30,24 @@ textarea,button { width: 100%; }
 <div id=cmd>
 <textarea id=grammar rows=5>// PEG grammar
 
-{ out("FORTH metacompiler"); }
-
 FORTH "metacompiler"
   = ( (
-    word:name { out(word) } 
+    word:name { out(word) }
     / comment ) _ ) *
     
 name
-  = token:[a-zA-Z0-9_]+ / [()+*]
+  = token:[a-zA-Z0-9_]+ { return join(token) } / [()+*]
 
 comment
-  = '#'[^\n]*
+  = '#'[^\n]* { return ""}
 
 _ "whitespace"
   = [ \t\n\r]*
 </textarea>
 
 <textarea id=pad rows=5># console
-2 * (3 + 4)
+# 22 * (3 + 4)
+1 2.3 4e-5 0xDeadBeef 0b1101
 </textarea>
 
 <button id=go onclick="INTERPRET(pad.value);">GO</button>
@@ -58,7 +57,8 @@ _ "whitespace"
 <script>
 
 function clr()  { log.innerText = '' }
-function out(str) { log.innerText += str+'\n'; }
+function out(str) { log.innerText += str+'\n' }
+function join(dat) { return dat.join("") }
 
 function INTERPRET(SRC) {
 	clr();
