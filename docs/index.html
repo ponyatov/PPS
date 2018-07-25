@@ -30,11 +30,11 @@ textarea,button { width: 100%; }
 <div id=cmd>
 <textarea id=grammar rows=5>// PEG grammar
 
-{ console.log("FORTH metacompiler"); }
+{ out("FORTH metacompiler"); }
 
 FORTH "metacompiler"
   = ( (
-    word:name { console.log(word) } 
+    word:name { out(word) } 
     / comment ) _ ) *
     
 name
@@ -56,10 +56,13 @@ _ "whitespace"
 
 <script src="PEG.js"></script>
 <script>
+
+function clr()  { log.innerText = '' }
+function out(str) { log.innerText += str+'\n'; }
+
 function INTERPRET(SRC) {
-	console.log(SRC)
-	var parser = peg.generate(grammar.value)
-	log.innerText = parser.parse(pad.value).toString()
+	clr();
+	peg.generate(grammar.value).parse(pad.value)
 }
 
 function head(obj) { return "<"+obj.type+":"+obj.value+">"; }
