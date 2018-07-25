@@ -5,6 +5,10 @@
 		{
 			"src": "planning.png",
 			"type": "image/png"
+		},
+		{
+			"src": "android_plan.png",
+			"type": "image/png"
 		}
 	],
 	"orientation": "portrait",
