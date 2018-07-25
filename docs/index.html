@@ -1,4 +1,4 @@
-<html manifest="app.cache">
+<!--html manifest="app.cache"-->
 
 <link rel="icon" type="image/png" href="planning.png" />
 
@@ -34,14 +34,24 @@ function INTERPRET(SRC) {
 	console.log(SRC)
 }
 
-var stack = nil;
+//var S = []
+var stack = nil
+
+//var W = []
 var words = nil
-var pad = nil;
+
+var pad = nil
+
+//function update() {
+//	console.log(S)
+	//stack.value = S.toString();
+//}
 
 window.onload = function() {
-	stack = document.getElementById("stack");
-	words = document.getElementById("words");
-	pad   = document.getElementById("pad"  );
+	stack = document.getElementById("stack")
+	words = document.getElementById("words")
+	pad   = document.getElementById("pad"  )
+	dsads();
 }
 
 window.onoffline = function() { pad.style.borderColor = "red"  ; }
