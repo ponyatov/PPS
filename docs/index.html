@@ -21,8 +21,7 @@ textarea,button { width: 100%; }
 
 #go { background: darkslategray; height: 11vmin; border-width: thick; }
 
-#meta { color: cyan; font-size: 2vh;  
-}
+#meta { color: cyan; font-size: 2vh; }
 
 #swipe {
 	max-height: 70%; overflow-x: scroll; overflow-y: scroll;
@@ -30,9 +29,7 @@ textarea,button { width: 100%; }
 }
 
 #swipe * {
-	display: inline-block; vertical-align: top;
-	max-width: 88%;
-	border: double; 
+	display: inline-block; vertical-align: top; max-width: 88%; border: double; 
 }
 
 </style>
@@ -84,7 +81,7 @@ textarea,button { width: 100%; }
 <pre id=stack># stack</pre>
 <pre id=words># words</pre>
 
-<textarea id=meta oninput='this.style.height = this.scrollHeight + "px"'>// PEG grammar
+<textarea id=meta oninput='swipe_upd()'>// PEG grammar
 
 FORTH "metacompiler"
   = ( (
@@ -160,10 +157,12 @@ var S = Stack('data')
 
 var W = Voc('global')
 
+function swipe_upd() { meta.style.height = meta.scrollHeight + "px" }
+
 function update() {
 	stack.innerText = S.dump(S)
 	words.innerText = W.dump(W)
-	meta.style.height = meta.scrollHeight + "px"
+	swipe_upd()
 }
 
 window.onload = function() {
