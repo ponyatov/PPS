@@ -21,16 +21,16 @@ textarea,button { width: 100%; }
 
 #go { background: darkslategray; height: 11vmin; border-width: thick; }
 
-#grammar { color: cyan; font-size: 2vh; }
+#meta { color: cyan; font-size: 2vh; }
 
 </style>
 
+<div id=swipe>
 <pre id=log># log</pre>
 <pre id=stack># stack</pre>
 <pre id=words># words</pre>
 
-<div id=cmd>
-<textarea id=grammar rows=5>// PEG grammar
+<textarea id=meta rows=11>// PEG grammar
 
 FORTH "metacompiler"
   = ( (
@@ -47,6 +47,10 @@ _ "whitespace"
   = [ \t\n\r]*
 </textarea>
 
+</div>
+
+<div id=cmd>
+
 <textarea id=pad rows=5># console
 # 22 * (3 + 4)
 1 2.3 4e-5 0xDeadBeef 0b1101
@@ -54,6 +58,21 @@ _ "whitespace"
 
 <button id=go onclick="INTERPRET(pad.value);">GO</button>
 </div>
+
+
+<script src="https://www.gstatic.com/firebasejs/5.3.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var firebase_config = {
+    apiKey: "AIzaSyAmUfAweE5EM6L-mpMFmo8jOJp1yb7zKWE",
+    authDomain: "leafy-oxide-211212.firebaseapp.com",
+    databaseURL: "https://leafy-oxide-211212.firebaseio.com",
+    projectId: "leafy-oxide-211212",
+    storageBucket: "leafy-oxide-211212.appspot.com",
+    messagingSenderId: "475478214606"
+  };
+  firebase.initializeApp(firebase_config);
+</script>
 
 <script src="PEG.js"></script>
 <script>
@@ -64,7 +83,8 @@ function join(dat) { return dat.join("") }
 
 function INTERPRET(SRC) {
 	clr();
-	peg.generate(grammar.value).parse(pad.value)
+	sessionStorage[Date()] = SRC
+	peg.generate(meta.value).parse(pad.value)
 }
 
 function head(obj) { return "<"+obj.type+":"+obj.value+">"; }
