@@ -17,20 +17,74 @@ html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
 
 textarea,button { width: 100%; }
 
-#cmd { position: absolute; bottom: 0; width: 100%; margin: 0; }
+#cmd { position: absolute; bottom: 0; width: 100%; margin: 0; max-height: 30%; }
 
 #go { background: darkslategray; height: 11vmin; border-width: thick; }
 
-#meta { color: cyan; font-size: 2vh; }
+#meta { color: cyan; font-size: 2vh;  
+}
+
+#swipe {
+	max-height: 70%; overflow-x: scroll; overflow-y: scroll;
+	white-space: nowrap; 
+}
+
+#swipe * {
+	display: inline-block; vertical-align: top;
+	max-width: 88%;
+	border: double; 
+}
 
 </style>
 
 <div id=swipe>
-<pre id=log># log</pre>
+<pre id=log># log
+1
+
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+
+1
+1
+11
+1
+
+
+1
+
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+
+1
+1
+11
+1
+
+
+</pre>
+
 <pre id=stack># stack</pre>
 <pre id=words># words</pre>
 
-<textarea id=meta rows=11>// PEG grammar
+<textarea id=meta oninput='this.style.height = this.scrollHeight + "px"'>// PEG grammar
 
 FORTH "metacompiler"
   = ( (
@@ -60,7 +114,12 @@ _ "whitespace"
 </div>
 
 
-<script src="https://www.gstatic.com/firebasejs/5.3.0/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-auth.js"></script>
+<!--script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-database.js"></script-->
+<!--script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-firestore.js"></script-->
+<!--script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-messaging.js"></script-->
+<!--script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-functions.js"></script-->
 <script>
   // Initialize Firebase
   var firebase_config = {
@@ -104,6 +163,7 @@ var W = Voc('global')
 function update() {
 	stack.innerText = S.dump(S)
 	words.innerText = W.dump(W)
+	meta.style.height = meta.scrollHeight + "px"
 }
 
 window.onload = function() {
@@ -112,6 +172,7 @@ window.onload = function() {
 //	pad   = document.getElementById("pad"  )
 	if (navigator.onLine) online(); else offline(); // fix on reload
 	update();
+	//swipe.style.height = pad.offsetHeight +"px";
 }
 
 function offline() { go.style.borderColor = "darkred" }
