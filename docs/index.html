@@ -103,8 +103,8 @@ _ "whitespace"
 <div id=cmd>
 
 <textarea id=pad rows=5># console
-# 22 * (3 + 4)
-1 2.3 4e-5 0xDeadBeef 0b1101
+ 22 * (3 + 4)
+# 1 2.3 4e-5 0xDeadBeef 0b1101
 </textarea>
 
 <button id=go onclick="INTERPRET(pad.value);">GO</button>
@@ -166,12 +166,8 @@ function update() {
 }
 
 window.onload = function() {
-//	stack = document.getElementById("stack")
-//	words = document.getElementById("words")
-//	pad   = document.getElementById("pad"  )
 	if (navigator.onLine) online(); else offline(); // fix on reload
 	update();
-	//swipe.style.height = pad.offsetHeight +"px";
 }
 
 function offline() { go.style.borderColor = "darkred" }
