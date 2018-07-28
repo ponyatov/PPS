@@ -24,7 +24,7 @@ textarea,button { width: 100%; }
 #meta { color: cyan; font-size: 2vh; }
 
 #swipe {
-	max-height: 70%; overflow-x: scroll; overflow-y: scroll;
+	max-height: 78%; overflow-x: scroll; overflow-y: scroll;
 	white-space: nowrap; 
 }
 
@@ -32,50 +32,40 @@ textarea,button { width: 100%; }
 	display: inline-block; vertical-align: top; max-width: 88%; border: double; 
 }
 
+#log * { border: none; }
+
 </style>
 
 <div id=swipe>
 <pre id=log># log
-1
 
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
+ <img src="android_plan.png"/> Welcome
 
-1
-1
-11
-1
+ This PPS/js system is a 
+ JavaScript/HTML implementation of a
+ <a href="https://ponyatov.quora.com/On-computer-language-design-PPS-Personal-Planning-System-platform">Personal Planning System</a> prototype
+ extended with <a href="https://ponyatov.quora.com/On-computer-language-design-metaprogramming-1">metaprogramming</a> features. 
 
-
-1
-
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-
-1
-1
-11
-1
-
-
+ To understand the overall idea
+ first look this <a href="http://www.google.com/url?q=http%3A%2F%2Fwww.bayfronttechnologies.com%2Fmc_workshop.html&sa=D&sntz=1&usg=AFQjCNF-KH1P-tQqIjhb2C0f7Fl1jCivKg">METAII workshop</a>:
+ it is an online implementation of a
+ METAII metacompiler (by) D.V. Schorre
+ 
+ Here I implemented tiny draft with a
+ feel of METAII workshop described above.
+ But it uses <a href="http://pegjs.org">PEG.js parser generator</a>
+ works in your browser as a js library,
+ so you have full control over syntax
+ and semantics right in your hands.
+ 
+ <h1>How to use it</h1>
+ 
+ If you scroll this page now to right,
+ you'll see the cyan-colored window
+ with PEG grammar of some FORTH-like
+ script mixed with JavaScript code
+ will be executed on every rule match
+   
 </pre>
 
 <pre id=stack># stack</pre>
@@ -83,13 +73,16 @@ textarea,button { width: 100%; }
 
 <textarea id=meta oninput='swipe_upd()'>// PEG grammar
 
+{ log.innerText = "you can run any JS code before PEG starts\n\n" }
+
 FORTH "metacompiler"
-  = ( (
-    word:name { out(word) }
-    / comment ) _ ) *
+  = ( ( comment
+    / word:name { out(word) }
+    ) _ ) *
     
 name
-  = token:[a-zA-Z0-9_]+ { return join(token) } / [()+*]
+  = token:[a-zA-Z0-9_]+
+    { return join(token) } / [()+*]
 
 comment
   = '#'[^\n]* { return ""}
@@ -103,8 +96,8 @@ _ "whitespace"
 <div id=cmd>
 
 <textarea id=pad rows=5># console
- 22 * (3 + 4)
-# 1 2.3 4e-5 0xDeadBeef 0b1101
+22 * (3 + 4)
+1 2.3 4e-5 0xDeadBeef 0b1101
 </textarea>
 
 <button id=go onclick="INTERPRET(pad.value);">GO</button>
@@ -151,13 +144,16 @@ function Sym(T,V) {
 }
 
 function Stack(name) { return Sym('stack',name); }
-function Voc(name) { return Sym('voc',name); }
+function Voc(name)   { return Sym('voc',name);   }
 
 var S = Stack('data') 
 
 var W = Voc('global')
 
-function swipe_upd() { meta.style.height = meta.scrollHeight + "px" }
+function swipe_upd() {
+	meta.style.width  = meta.scrollWidth + "px"
+	meta.style.height = meta.scrollHeight + "px"
+}
 
 function update() {
 	stack.innerText = S.dump(S)
