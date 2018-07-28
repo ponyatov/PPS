@@ -17,6 +17,10 @@ html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
 
 textarea,button { width: 100%; }
 
+textarea { caret-color: red; caret-style: block; }
+
+.input_strips { font-size: 30px; }
+
 #cmd { position: absolute; bottom: 0; width: 100%; margin: 0; max-height: 30%; }
 
 #go { background: darkslategray; height: 11vmin; border-width: thick; }
@@ -24,7 +28,7 @@ textarea,button { width: 100%; }
 #meta { color: cyan; font-size: 2vh; }
 
 #swipe {
-	max-height: 78%; overflow-x: scroll; overflow-y: scroll;
+	height: 77%; overflow-x: scroll; overflow-y: scroll;
 	white-space: nowrap; 
 }
 
@@ -77,18 +81,34 @@ textarea,button { width: 100%; }
 
 FORTH "metacompiler"
   = ( ( comment
+    / num:ber   { out(num)  }
     / word:name { out(word) }
     ) _ ) *
+
+ber
+  = pfx:'0x' hex:[0-9a-fA-F]+
+    { return 'hex:'+pfx+join(hex) }
+  / pfx:'0b' bin:[01]+
+    { return 'bin:'+pfx+join(bin) }
+  / num:([0-9]+[.][0-9]*)
+    { return 'num:'+join(num) }
+  / exp:([0-9]+[eE][+\-]?[0-9]+)
+    { return 'exp:'+join(exp) }
+  / int:[0-9]+
+    { return 'int:'+join(int) }
     
 name
   = token:[a-zA-Z0-9_]+
-    { return join(token) } / [()+*]
+    { return join(token) }
+  / op:[()+*]
+    { return 'op:'+op }
 
 comment
-  = '#'[^\n]* { return ""}
+  = '#'[^\n]* { return "" }
 
 _ "whitespace"
   = [ \t\n\r]*
+
 </textarea>
 
 </div>
@@ -100,7 +120,7 @@ _ "whitespace"
 1 2.3 4e-5 0xDeadBeef 0b1101
 </textarea>
 
-<button id=go onclick="INTERPRET(pad.value);">GO</button>
+<button id=go onclick="gocmd()">GO</button>
 </div>
 
 
@@ -126,14 +146,26 @@ _ "whitespace"
 <script src="PEG.js"></script>
 <script>
 
+function gocmd() { INTERPRET(pad.value) }
+
 function clr()  { log.innerText = '' }
 function out(str) { log.innerText += str+'\n' }
 function join(dat) { return dat.join("") }
 
+function errlog(e) {
+	S = 'error:\n'
+	JSON.stringify(e).match(/.{1,40}/g).forEach(function(item,i,arr) {
+		S += item + '\n'
+	})
+	return S 
+}
+
 function INTERPRET(SRC) {
 	clr();
 	sessionStorage[Date()] = SRC
-	peg.generate(meta.value).parse(pad.value)
+	try { peg.generate(meta.value).parse(pad.value)	}
+	catch(e) { log.innerText += errlog(e) }
+	
 }
 
 function head(obj) { return "<"+obj.type+":"+obj.value+">"; }
@@ -151,7 +183,7 @@ var S = Stack('data')
 var W = Voc('global')
 
 function swipe_upd() {
-	meta.style.width  = meta.scrollWidth + "px"
+	//meta.style.width  = meta.scrollWidth +1 + "px"
 	meta.style.height = meta.scrollHeight + "px"
 }
 
@@ -161,7 +193,12 @@ function update() {
 	swipe_upd()
 }
 
+function keydown(event) {
+	if (event.ctrlKey & event.key == 'Enter') gocmd()
+}
+
 window.onload = function() {
+	pad.onkeydown = meta.onkeydown = keydown
 	if (navigator.onLine) online(); else offline(); // fix on reload
 	update();
 }
