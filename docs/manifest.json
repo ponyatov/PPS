@@ -3,14 +3,8 @@
 	"name": "Personal Planning System /js",
 	"icons": [
 		{
-			"src": "android_plan.png",
-			"type": "image/png",
-			"sizes": "128x128"
-		},
-		{
 			"src": "planning.png",
-			"type": "image/png",
-			"sizes": "48x48"
+			"type": "image/png"
 		}
 	],
 	"orientation": "portrait",
