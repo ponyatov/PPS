@@ -9,9 +9,36 @@
 
 <pre id=log># log</pre>
 
-<textarea id=pad rows=5># console
+<pre id=stack># stack</pre>
+
+<pre id=voc># vocabulary</pre>
+
+<textarea id=meta oninput="update()">// PEG grammar
+
+FORTH = ( ( comment
+  / n:number { console.log(n) }
+  / w:word   { console.log(w) }
+) _ ) *
+
+number
+  = pfx:'0x' hex:[0-9a-fA-F]+    { return 'hex:'+pfx+join(hex) }
+  / pfx:'0b' bin:[01]+           { return 'bin:'+pfx+join(bin) }
+  / exp:([0-9]+[eE][+\-]?[0-9]+) { return 'exp:'+join(exp) }
+  / flo:([0-9]+'.'[0-9]*)        { return 'flo:'+join(flo) }
+  / int:([0-9]+)                 { return 'int:'+join(int) }
+
+word
+  = name:[a-zA-Z0-9_.]+ { return join(name) } / [()*+\-]
+
+comment = '#'[^\n]*
+
+_ " drop spaces " = [ \t\r\n]*
+</textarea>
+
+<div id=cmd>
+<textarea id=pad oninput="update()"># console
 22 * (3 + 4)
 1 2.3 4e-5 0xDeadBeef 0b1101
 </textarea>
-
-<button id=go onclick="">GO</button>
+<button id=go onclick="go()">GO</button>
+</div>

@@ -3,6 +3,14 @@
 	font-family: monospace, monospace; font-size: 2vh;
 }
 
-pre,textarea,button { width: 100%; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
 
-button { background: darkslategray; }
+pre, textarea, button {
+	width: 100%;
+}
+
+button {
+	background: darkslategray;
+}
+
+#cmd { position: absolute; bottom: 0; width: 100%; }
