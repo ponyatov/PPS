@@ -1,0 +1,8 @@
+* {
+	background: black; color: lightgreen;
+	font-family: monospace, monospace; font-size: 2vh;
+}
+
+pre,textarea,button { width: 100%; }
+
+button { background: darkslategray; }
