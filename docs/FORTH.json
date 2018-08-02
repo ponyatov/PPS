@@ -1,0 +1,13 @@
+{
+	"short_name": "FORTH/js",
+	"icons": [
+		{
+			"src": "triangle.png",
+			"type": "image/png"
+		}
+	],
+	"orientation": "portrait",
+	"background_color": "black",
+	"theme_color": "black",
+	"display": "standalone"
+}
