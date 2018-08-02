@@ -16,7 +16,7 @@
 <textarea id=meta oninput="update()">// PEG grammar
 
 FORTH = ( ( comment
-  / n:number { console.log(n) }
+  / n:number { push(n) }
   / w:word   { console.log(w) }
 ) _ ) *
 

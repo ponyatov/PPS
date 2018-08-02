@@ -26,9 +26,14 @@ function keydown(event) {
 function update() {
 	meta.style.height = meta.scrollHeight + "px"
 	 pad.style.height =  pad.scrollHeight + "px"
+	stack.innerText = "# stack: " + JSON.stringify(S)
 }
 
 window.onload = function() {
 	document.body.onkeydown = keydown
 	update()
 }
+
+S = []
+
+function push(obj) { S.push(obj); update(); }
