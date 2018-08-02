@@ -198,7 +198,7 @@ function keydown(event) {
 }
 
 window.onload = function() {
-	pad.onkeydown = meta.onkeydown = keydown
+	document.body.onkeydown = keydown
 	if (navigator.onLine) online(); else offline(); // fix on reload
 	update();
 }
