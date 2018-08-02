@@ -17,6 +17,7 @@ function INTERPRET(SRC) {
 
 function go() {
 	INTERPRET(pad.value)
+	update()
 }
 
 function keydown(event) {
@@ -26,7 +27,7 @@ function keydown(event) {
 function update() {
 	meta.style.height = meta.scrollHeight + "px"
 	 pad.style.height =  pad.scrollHeight + "px"
-	stack.innerText = "# stack: " + JSON.stringify(S)
+	stack.innerText = S.dump()
 }
 
 window.onload = function() {
@@ -34,6 +35,30 @@ window.onload = function() {
 	update()
 }
 
-S = []
+function Stack(name) {
+	this.type  = 'stack'
+	this.value = name
+	this.nest  = []
+}
 
-function push(obj) { S.push(obj); update(); }
+Stack.prototype.head = function() {
+	return "<" + this.type + ":" + this.value + ">"
+}
+
+Stack.prototype.pad = function(depth) { return '\n'+"  ".repeat(depth) }
+
+//Stack.prototype.dump = function(depth=0) {
+//	S = this.pad(depth) + this.head()
+//	S += this.pad(depth+1) + JSON.stringify(this.nest)
+//	return S
+//}
+
+Stack.prototype.dump = function() {
+	return this.head() + this.pad(1) + JSON.stringify(this.nest)
+}
+
+Stack.prototype.push = function(item) { this.nest.push(item) }
+
+S = new Stack('data')
+
+function push(obj) { S.push(obj) }
