@@ -5,6 +5,9 @@
 
 <link rel="stylesheet" href="shared.css">
 
+<script src="PEG.js"></script>
+<script src="shared.js"></script>
+
 <div id=swipe>
 
 <pre id=log># log
@@ -14,7 +17,9 @@ This is metaprogramming demo
     uses PEG.js library as meta interpreter
 </pre>
 
-<textarea id=meta rows=11>// PEG gramma metaprogram
+<textarea id=meta rows=11 oninput="update()">// PEG gramma metaprogram
+
+ANY = .+
 </textarea>
 
 </div>
