@@ -168,17 +168,22 @@ function INTERPRET(SRC) {
 	
 }
 
-function head(obj) { return "<"+obj.type+":"+obj.value+">"; }
-function dump(obj) { return head(obj); }
-
 function Sym(T,V) {
-	return {type:T, value:V, attr:{}, nest:[], dump:dump }
+	this.type  = T
+	this.value = V
+	this.attr  = {}
+	this.nest  = []
 }
 
 function Stack(name) { return Sym('stack',name); }
+
+Sym.prototype.push = function(object) { this.nest.push(object) }
+
+Sym.prototype.dump = Sym.prototype.head = function() { return "<"+this.type+":"+this.value+">" }
+
 function Voc(name)   { return Sym('voc',name);   }
 
-var S = Stack('data') 
+var S = new Stack('data') 
 
 var W = Voc('global')
 
@@ -188,8 +193,8 @@ function swipe_upd() {
 }
 
 function update() {
-	stack.innerText = S.dump(S)
-	words.innerText = W.dump(W)
+	stack.innerText = S.dump()
+	words.innerText = W.dump()
 	swipe_upd()
 }
 

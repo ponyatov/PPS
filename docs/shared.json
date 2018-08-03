@@ -1,0 +1,14 @@
+{
+	"short_name": "SHARED/js",
+	"icons": [
+		{
+			"src": "hedge64x64.png",
+			"type": "image/png",
+			"sizes": "64x64"
+		}
+	],
+	"orientation": "portrait",
+	"background_color": "black",
+	"theme_color": "black",
+	"display": "standalone"
+}
