@@ -1,0 +1,19 @@
+* {
+	background: black; color: lightgreen;
+	font-family: monospace, monospace; font-size: 2vh;
+}
+
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+
+#log,textarea,button {
+	border: solid; width: 100%;
+}
+
+#meta { color: cyan; }
+
+button { background: darkslategray; height: 11vmin; } 
+
+#cmd { position: absolute; bottom: 0; width: 100%; max-height: 30%; }
+
+#swipe   { height: 77%; overflow: scroll; white-space: nowrap; }
+#swipe * { display: inline-block; vertical-align: top; width:auto; max-width: 88%; }
