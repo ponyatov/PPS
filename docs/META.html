@@ -1,0 +1,78 @@
+<title>META/js</title>
+
+<style>
+
+* {
+	background: black; color: lightgreen;
+	font-family: monospace, monospace; font-size: 2vh;
+	border: solid; margin: 0; 
+}
+
+textarea,button { width:100%; }
+
+#cmd { position: absolute; bottom: 0; width:100%; }
+
+#pad { color: cyan; }
+
+#go { background: darkslategrey; height: 11vmin; }
+
+</style>
+
+<pre id=log># log</pre>
+
+<div id=cmd>
+<textarea id=meta rows=11>// PEG grammar
+
+SRC " source code "
+  = (( SYM / comment ) _ ) *
+
+_ " drop spaces "
+  = [ \t\r\n]*
+
+SYM " symbol "
+  = token:.+
+    { out(join(token)) }
+
+</textarea>
+
+<textarea id=pad rows=5># command
+
+-1 +02.30 +4e-5 0xDeadBeef 0b1101 \ numbers
+
+
+</textarea>
+
+<button id=go onclick="go()">GO</button>
+
+</div>
+
+<script src="PEG.js"></script>
+<script>
+
+function join(token) { return token.join('') }
+
+function out(some) { console.log(JSON.stringify(some)) }
+
+function error(e) {
+	S = 'error:\n'
+	JSON.stringify(e).match(/.{1,40}/g).forEach(function(item,i,arr) {
+		S += item + '\n'
+	})
+	return S 
+}
+
+function go() {
+	try {
+		var parser = peg.generate(meta.value)
+		parser.parse(pad.value)
+	} catch(e) { log.innerText = error(e) }
+}
+
+function keydown(event) {
+	if (event.ctrlKey & event.key == 'Enter') go()
+}
+
+window.onload = function() {
+	document.body.onkeydown = keydown
+}
+</script>
