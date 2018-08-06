@@ -10,6 +10,8 @@
 
 textarea,button { width:100%; }
 
+textarea { caret-color: red; }
+
 #cmd { position: absolute; bottom: 0; width:100%; }
 
 #pad { color: cyan; }
@@ -24,14 +26,14 @@ textarea,button { width:100%; }
 <textarea id=meta rows=11>// PEG grammar
 
 SRC " source code "
-  = (( SYM / comment ) _ ) *
+  = (( comment / symbol ) _ ) *
 
-_ " drop spaces "
-  = [ \t\r\n]*
+comment = [\#\\][^\n]*
 
-SYM " symbol "
-  = token:.+
-    { out(join(token)) }
+_ " drop spaces " = [ \t\r\n]*
+
+symbol = token:[a-zA-Z0-9_\+\-.]+
+  { out(join(token)) }
 
 </textarea>
 
@@ -51,7 +53,7 @@ SYM " symbol "
 
 function join(token) { return token.join('') }
 
-function out(some) { console.log(JSON.stringify(some)) }
+function out(some) { log.innerText += JSON.stringify(some)+'\n' }
 
 function error(e) {
 	S = 'error:\n'
@@ -62,6 +64,7 @@ function error(e) {
 }
 
 function go() {
+	log.innerText = ''
 	try {
 		var parser = peg.generate(meta.value)
 		parser.parse(pad.value)
