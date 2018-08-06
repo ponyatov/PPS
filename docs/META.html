@@ -14,13 +14,15 @@ textarea { caret-color: red; }
 
 #cmd { position: absolute; bottom: 0; width:100%; }
 
-#pad { color: cyan; }
+#stack,#pad { color: cyan; min-height:1em; }
 
 #go { background: darkslategrey; height: 11vmin; }
 
 </style>
 
 <pre id=log># log</pre>
+
+<pre id=stack># stack</pre>
 
 <div id=cmd>
 <textarea id=meta rows=11>// PEG grammar
@@ -33,7 +35,7 @@ comment = [\#\\][^\n]*
 _ " drop spaces " = [ \t\r\n]*
 
 symbol = token:[a-zA-Z0-9_\+\-.]+
-  { out(join(token)) }
+  { push(join(token)) }
 
 </textarea>
 
@@ -53,15 +55,21 @@ symbol = token:[a-zA-Z0-9_\+\-.]+
 
 function join(token) { return token.join('') }
 
-function out(some) { log.innerText += JSON.stringify(some)+'\n' }
-
-function error(e) {
-	S = 'error:\n'
-	JSON.stringify(e).match(/.{1,40}/g).forEach(function(item,i,arr) {
+function sf(some) {
+	S = ''
+	JSON.stringify(some).match(/.{1,40}/g).forEach(function(item,i,arr) {
 		S += item + '\n'
 	})
-	return S 
+	return S	
 }
+
+function out(some) { log.innerText += JSON.stringify(some)+'\n' }
+
+S = []
+
+function push(obj) { S.push(obj) }
+
+function error(e) { return 'error:\n' + sf(e) }
 
 function go() {
 	log.innerText = ''
@@ -69,6 +77,7 @@ function go() {
 		var parser = peg.generate(meta.value)
 		parser.parse(pad.value)
 	} catch(e) { log.innerText = error(e) }
+	stack.innerText = sf(S)
 }
 
 function keydown(event) {
