@@ -1,64 +1,41 @@
+/// FORTH-like script language implementation
 
-function errlog(error) {
-	var S = "error:\n"
-	JSON.stringify(error).match(/.{1,77}/g).forEach(function(item,i,arr) {
-		S += item + '\n'
-	})
-	return S
-}
+PEG = `// FORTH.pegjs grammar
 
-function join(dat) { return dat.join("") }
+{ out('you can run any JS code')
+  out('before PEG starts'      ) }
 
-function INTERPRET(SRC) {
-	log.innerText = ''
-	try { peg.generate(meta.value).parse(pad.value) }
-	catch(e) { log.innerText = errlog(e) }
-}
+FORTH "metacompiler"
+  = (( comment 
+  / n:number { out(n) }
+  / w:word   { out(w) }
+  ) _ ) *
 
-function go() {
-	INTERPRET(pad.value)
-	update()
-}
+comment = [#\\\\][^\\n]*
+_       = [ \\t\\r\\n]*	/* drop spaces */
 
-function keydown(event) {
-	if (event.ctrlKey & event.key == 'Enter') go()
-}
+number
+  = '0x' hex:[0-9a-fA-F]+
+    { return new Hex(join(hex)) }
+  / '0b' bin:[01]+
+    { return new Bin(join(bin)) }
+  / s:[\\+\\-]?
+    n:[0-9]+
+    f:('.' flo:[0-9]*
+      { return flo } )?
+    e:([eE][\+\-]?[0-9]+)?
+      { return num(s,n,f,e) }
 
-function update() {
-	meta.style.height = meta.scrollHeight + "px"
-	 pad.style.height =  pad.scrollHeight + "px"
-	stack.innerText = S.dump()
-}
+word
+  = w:[a-zA-Z0-9_.\\+\\-]+
+    { out(join(w)) }
 
-window.onload = function() {
-	document.body.onkeydown = keydown
-	update()
-}
+`
+	
+PAD = `# FORTH command
 
-function Stack(name) {
-	this.type  = 'stack'
-	this.value = name
-	this.nest  = []
-}
-
-Stack.prototype.head = function() {
-	return "<" + this.type + ":" + this.value + ">"
-}
-
-Stack.prototype.pad = function(depth) { return '\n'+"  ".repeat(depth) }
-
-//Stack.prototype.dump = function(depth=0) {
-//	S = this.pad(depth) + this.head()
-//	S += this.pad(depth+1) + JSON.stringify(this.nest)
-//	return S
-//}
-
-Stack.prototype.dump = function() {
-	return this.head() + this.pad(1) + JSON.stringify(this.nest)
-}
-
-Stack.prototype.push = function(item) { this.nest.push(item) }
+-01 +02.30 +4e-5  \\ numbers
+0xDeadBeef 0b1101 \\ machine
+`
 
 S = new Stack('data')
-
-function push(obj) { S.push(obj) }
