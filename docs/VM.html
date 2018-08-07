@@ -9,10 +9,10 @@
 }
 
 textarea,button { width:100%; }
+textarea { caret-color: red; } 
+button { background: darkslategray; height: 7vmin; }
 
-#meta { color:cyan; }
-
-button { background: darkslategray; height: 7vmin; } 
+#stack,#pad { color:cyan; }
 
 #cmd { position: absolute; bottom:0; }
 
@@ -21,27 +21,50 @@ button { background: darkslategray; height: 7vmin; }
 <pre id=log>Hello
 </pre>
 
+<pre id=stack>stack:</pre>
+
 <div id=cmd>
-<textarea id=meta rows=11>// PEG grammar</textarea>
-<textarea id=pad rows=5># command </textarea>
+
+<textarea id=meta rows=11>// PEG grammar
+
+{ out('Hello') } // init code runs first
+
+FORTH   = (( comment / word ) _ ) *
+comment = [#\\][^\n]*
+_       = [ \t\r\n]*
+
+word
+  = w:[a-zA-Z0-9_\+\-\.]+
+    { out(join(w)) }
+
+</textarea>
+
+<textarea id=pad rows=5># command
+
+-01 +02.30 +4e-5 0xDeadBeef 0b1101 \ numbers
+
+</textarea>
+
 <button id=go onclick="go()">GO</button>
 </div>
 
 <script src=PEG.js></script>
 <script>
 
-function err(error) {
-	var S = "error:\n"
-	JSON.stringify(error).match(/.{1,44}/g).forEach(function(item,i,arr) {
-		S += item + '\n'
-	})
-	return S
+function join(dat) { return dat.join("") }
+
+function out(some) {
+	var S = '' 
+	JSON.stringify(some).match(/.{1,44}/g)
+		.forEach(function(item,i,arr) {
+			S += item + '\n'})
+	log.innerText += S
 }
 
 function go() {
 	log.innerText = ''
 	try { peg.generate(meta.value).parse(pad.value) }
-	catch(e) { log.innerText = err(e) }
+	catch(e) { log.innerText = "error:\n" + out(e) }
 }
 
 function keydown(event) {
