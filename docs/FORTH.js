@@ -7,7 +7,7 @@ PEG = `// FORTH.pegjs grammar
 
 FORTH "metacompiler"
   = (( comment 
-  / n:number { out(n) }
+  / n:number { push(n) }
   / w:word   { out(w) }
   ) _ ) *
 
