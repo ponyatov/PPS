@@ -1,5 +1,7 @@
 <title>VM/js</title>
 
+<link rel="icon" type="image/png" href="triangle.png">
+
 <style>
 
 * {
@@ -25,16 +27,32 @@ button { background: darkslategray; height: 7vmin; }
 
 <div id=cmd>
 
-<textarea id=meta rows=11>// PEG grammar
+<textarea id=meta rows=22>// PEG grammar
 
 { out('Hello') } // init code runs first
 
-FORTH   = (( comment / word ) _ ) *
+FORTH
+  = (( comment 
+  / n:number { out(n) }
+  / w:word   { out(w) }
+  ) _ ) *
+
 comment = [#\\][^\n]*
 _       = [ \t\r\n]*
 
+number
+  = '0x' hex:[0-9a-fA-F]+
+    { return join(hex) }
+  / '0b' bin:[01]+
+    { return join(bin) }
+  / pfx:[\+\-]?
+    int:[0-9]+
+    flo:('.' flo:[0-9]* { return flo } )?
+    exp:([eE][\+\-]?[0-9]+)?
+      { return num(pfx,int,flo,exp) }
+
 word
-  = w:[a-zA-Z0-9_\+\-\.]+
+  = w:[a-zA-Z0-9_.\+\-]+
     { out(join(w)) }
 
 </textarea>
@@ -53,18 +71,31 @@ word
 
 function join(dat) { return dat.join("") }
 
-function out(some) {
+function num(pfx,int,flo,exp) {
+	S = ''
+	if (pfx) S += pfx
+	S += join(int)
+	if (flo) S += '.'+join(flo)
+	if (exp) S += join(exp)
+	return S
+}
+
+function wrap(some) {
 	var S = '' 
-	JSON.stringify(some).match(/.{1,44}/g)
+	JSON.stringify(some)
+		.match(/.{1,44}/g)
 		.forEach(function(item,i,arr) {
 			S += item + '\n'})
-	log.innerText += S
+	return S	
 }
+
+function out(some) { log.innerText += wrap(some) }
 
 function go() {
 	log.innerText = ''
 	try { peg.generate(meta.value).parse(pad.value) }
 	catch(e) { log.innerText = "error:\n" + out(e) }
+	update()
 }
 
 function keydown(event) {
@@ -73,6 +104,15 @@ function keydown(event) {
 
 window.onload = function() {
 	document.body.onkeydown = keydown
+	update()
+}
+
+S = []	// data stack
+
+function push(obj) { S.push(obj) }
+
+function update() {
+	stack.innerText = wrap('stack:' + JSON.stringify(S))
 }
 
 </script>
