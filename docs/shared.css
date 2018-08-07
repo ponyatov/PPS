@@ -11,3 +11,15 @@ button   { width:100%; background: darkslategray; height: 11vmin; }
 #cmd { position: absolute; bottom:0; width:100%; }
 
 #stack,#pad { color:cyan; }
+
+#topswipe {
+	height:66%; overflow: scroll; white-space: nowrap; }
+
+#cmdswipe {
+	height:44%; overflow: scroll; white-space: nowrap; }
+
+.swipe pre,textarea {
+	border:solid;
+	display: inline-block; vertical-align: top;
+	min-width: 11%; min-height: 11%; 
+	max-width: 95%; }

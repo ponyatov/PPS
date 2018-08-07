@@ -1,5 +1,6 @@
 {
 	"short_name": "FORTH/js",
+	"name": "FORTH Virtual Machine /js",
 	"icons": [
 		{
 			"src": "triangle.png",

@@ -1,27 +1,22 @@
 /// shared JS code
 
-
-function errlog(error) {
-	var S = "error:\n"
-	JSON.stringify(error).match(/.{1,77}/g).forEach(function(item,i,arr) {
-		S += item + '\n'
-	})
-	return S
+function wrap(some) {
+	var S = '' 
+	JSON.stringify(some)
+		.match(/.{1,44}/g)
+		.forEach(function(item,i,arr) {
+			S += item + '\n'})
+	return S	
 }
 
-function INTERPRET(SRC) {
-	log.innerText = ''
-	try { peg.generate(meta.value).parse(pad.value) }
-	catch(e) { log.innerText = errlog(e) }
-}
+function out(some) { log.innerText += wrap(some) }
 
-function update() {
-//	meta.style.height = meta.scrollHeight + "px"
-//	 pad.style.height =  pad.scrollHeight + "px"
-}
+function err(e) { out('error:\n'+wrap(e)) }
 
 function go() {
-	INTERPRET(pad.value)
+	log.innerText = ''
+	try { peg.generate(meta.value).parse(pad.value) }
+	catch(e) { log.innerText = err(e) }
 	update()
 }
 
@@ -51,17 +46,6 @@ function num(s,n,f,e) {
 	if (!f & !e) return new Int(N)
 	else		 return new Num(N)
 }
-
-function wrap(some) {
-	var S = '' 
-	JSON.stringify(some)
-		.match(/.{1,44}/g)
-		.forEach(function(item,i,arr) {
-			S += item + '\n'})
-	return S	
-}
-
-function out(some) { log.innerText += wrap(some) }
 
 function go() {
 	log.innerText = ''

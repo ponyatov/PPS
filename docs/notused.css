@@ -65,20 +65,4 @@ textarea { caret-color: red; }
 button { background: darkslategray; height: 11vmin; }
 
 
-#topswipe {
-	height:66%; overflow: scroll; white-space: nowrap; }
-
-#cmdswipe {
-	height:44%; overflow: scroll; white-space: nowrap; }
-
-#topswipe * {
-	border:solid;
-	display: inline-block; vertical-align: top; max-width: 88%; }
-
-.swipe * {
-	border:solid;
-	display: inline-block; vertical-align: top;
-	min-width: 11%; min-height: 11%; 
-	max-width: 95%; }
-	
 </style>

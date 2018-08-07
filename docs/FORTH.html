@@ -1,44 +1,41 @@
-<title>FORTH/js</title>
-<link rel="manifest" href="/FORTH.json">
-<link rel="icon" type="image/png" href="triangle.png" />
+<title>VM/js</title>
+<link rel="manifest" href="/FORTH.manifest">
 <meta name="theme-color" content="black">
+<link rel="icon" type="image/png" href="triangle.png">
 
-<link rel="stylesheet" href="FORTH.css">
-<script src="PEG.js"></script>
-<script src=FORTH.js></script>
+<link rel="stylesheet" href="shared.css">
 
-<pre id=log># log</pre>
+<div id=topswipe class=swipe>
 
-<pre id=stack># stack</pre>
+<pre id=log># log: Hello</pre>
 
-<pre id=voc># vocabulary</pre>
+<pre id=stack>stack:</pre>
 
-<textarea id=meta oninput="update()">// PEG grammar
-
-FORTH = ( ( comment
-  / n:number { push(n) }
-  / w:word   { push(w) }
-) _ ) *
-
-number
-  = pfx:'0x' hex:[0-9a-fA-F]+    { return   parseInt(join(hex),0x10) }
-  / pfx:'0b' bin:[01]+           { return   parseInt(join(bin),0x02) }
-  / exp:([0-9]+[eE][+\-]?[0-9]+) { return parseFloat(join(exp)     ) }
-  / flo:([0-9]+'.'[0-9]*)        { return parseFloat(join(flo)     ) }
-  / int:([0-9]+)                 { return   parseInt(join(int)     ) }
-
-word
-  = name:[a-zA-Z0-9_.]+ { return join(name) } / [()*+\-]
-
-comment = '#'[^\n]*
-
-_ " drop spaces " = [ \t\r\n]*
-</textarea>
+</div>
 
 <div id=cmd>
-<textarea id=pad oninput="update()"># console
-22 * (3 + 4)
-1 2.3 4e-5 0xDeadBeef 0b1101
-</textarea>
+
+<div id=cmdswipe class=swipe>
+
+<textarea id=meta rows=11></textarea>
+
+<textarea id=pad rows=5></textarea>
+
+</div>
+
 <button id=go onclick="go()">GO</button>
 </div>
+
+<script src=PEG.js></script>
+<script src=shared.js></script>
+<script src=SYM.js></script>
+<script src=FORTH.js></script>
+<script>
+
+function push(obj) { S.push(obj) }
+
+function update() {
+	stack.innerText = JSON.stringify(S)
+}
+
+</script>
