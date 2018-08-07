@@ -1,5 +1,5 @@
 <title>VM/js</title>
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="/VM.json">
 <meta name="theme-color" content="black">
 <link rel="icon" type="image/png" href="triangle.png">
 
@@ -33,7 +33,7 @@ button { background: darkslategray; height: 11vmin; }
 	border:solid;
 	display: inline-block; vertical-align: top;
 	min-width: 11%; min-height: 11%; 
-	max-width: 88%; }
+	max-width: 95%; }
 	
 </style>
 
@@ -66,15 +66,15 @@ _       = [ \t\r\n]*
 
 number
   = '0x' hex:[0-9a-fA-F]+
-    { return join(hex) }
+    { return new Hex(join(hex)) }
   / '0b' bin:[01]+
-    { return join(bin) }
-  / p:[\+\-]?
+    { return new Bin(join(bin)) }
+  / s:[\+\-]?
     n:[0-9]+
     f:('.' flo:[0-9]*
       { return flo } )?
     e:([eE][\+\-]?[0-9]+)?
-      { return num(p,n,f,e) }
+      { return num(s,n,f,e) }
 
 word
   = w:[a-zA-Z0-9_.\+\-]+
@@ -84,9 +84,8 @@ word
 
 <textarea id=pad rows=5># command
 
-\ numbers
-
--01 +02.30 +4e-5 0xDeadBeef 0b1101 
+-01 +02.30 +4e-5  \ numbers
+0xDeadBeef 0b1101 \ machine
 
 </textarea>
 
@@ -96,17 +95,21 @@ word
 </div>
 
 <script src=PEG.js></script>
+<script src=SYM.js></script>
 <script>
+
+/// parser helpers
 
 function join(dat) { return dat.join("") }
 
-function num(pfx,int,flo,exp) {
-	S = ''
-	if (pfx) S += pfx
-	S += join(int)
-	if (flo) S += '.'+join(flo)
-	if (exp) S += join(exp)
-	return S
+function num(s,n,f,e) {
+	var N = ''
+	if (s) N += s					// [s]ign prefix
+	N += join(n)					// i[n]teger part
+	if (f) N += '.'+join(f)			// [f]loat part
+	if (e) N += join(e)				// [e]xponential part
+	if (!f & !e) return new Int(N)
+	else		 return new Num(N)
 }
 
 function wrap(some) {
@@ -136,12 +139,12 @@ window.onload = function() {
 	update()
 }
 
-S = []	// data stack
+S = new Stack('data')
 
 function push(obj) { S.push(obj) }
 
 function update() {
-	stack.innerText = wrap('stack:' + JSON.stringify(S))
+	stack.innerText = S.head()
 }
 
 </script>

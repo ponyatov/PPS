@@ -1,0 +1,14 @@
+{
+	"short_name": "VM/js",
+	"name": "FORTH Virtual Machine /js",
+	"icons": [
+		{
+			"src": "triangle.png",
+			"type": "image/png"
+		}
+	],
+	"orientation": "portrait",
+	"background_color": "darkslategrey",
+	"theme_color": "darkslategrey",
+	"display": "standalone"
+}
