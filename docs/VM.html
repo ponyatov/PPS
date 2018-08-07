@@ -1,0 +1,55 @@
+<title>VM/js</title>
+
+<style>
+
+* {
+	background: black; color: lightgreen;
+	font-family: monospace, monospace; font-size: 2vh;
+	margin:0;
+}
+
+textarea,button { width:100%; }
+
+#meta { color:cyan; }
+
+button { background: darkslategray; height: 7vmin; } 
+
+#cmd { position: absolute; bottom:0; }
+
+</style>
+
+<pre id=log>Hello
+</pre>
+
+<div id=cmd>
+<textarea id=meta rows=11>// PEG grammar</textarea>
+<textarea id=pad rows=5># command </textarea>
+<button id=go onclick="go()">GO</button>
+</div>
+
+<script src=PEG.js></script>
+<script>
+
+function err(error) {
+	var S = "error:\n"
+	JSON.stringify(error).match(/.{1,44}/g).forEach(function(item,i,arr) {
+		S += item + '\n'
+	})
+	return S
+}
+
+function go() {
+	log.innerText = ''
+	try { peg.generate(meta.value).parse(pad.value) }
+	catch(e) { log.innerText = err(e) }
+}
+
+function keydown(event) {
+	if (event.ctrlKey & event.key == 'Enter') go()
+}
+
+window.onload = function() {
+	document.body.onkeydown = keydown
+}
+
+</script>
