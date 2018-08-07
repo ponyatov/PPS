@@ -12,20 +12,42 @@
 
 textarea,button { width:100%; font-family: inherit;font-size: inherit; }
 textarea { caret-color: red; }
-button { background: darkslategray; height: 7vmin; }
+button { background: darkslategray; height: 9vmin; }
 
 #stack,#pad { color:cyan; }
 
 #cmd { position: absolute; bottom:0; width:100%; }
 
+#topswipe {
+	height:66%; overflow: scroll; white-space: nowrap; }
+
+#cmdswipe {
+	height:44%; overflow: scroll; white-space: nowrap; }
+
+#topswipe * {
+	border:solid;
+	display: inline-block; vertical-align: top; max-width: 88%; }
+
+.swipe * {
+	border:solid;
+	display: inline-block; vertical-align: top;
+	min-width: 11%; min-height: 11%; 
+	max-width: 88%; }
+	
 </style>
+
+<div id=topswipe class=swipe>
 
 <pre id=log>Hello
 </pre>
 
 <pre id=stack>stack:</pre>
 
+</div>
+
 <div id=cmd>
+
+<div id=cmdswipe class=swipe>
 
 <textarea id=meta rows=11>// PEG grammar
 
@@ -51,7 +73,7 @@ number
     f:('.' flo:[0-9]*
       { return flo } )?
     e:([eE][\+\-]?[0-9]+)?
-{ return num(p,n,f,e) }
+      { return num(p,n,f,e) }
 
 word
   = w:[a-zA-Z0-9_.\+\-]+
@@ -61,9 +83,13 @@ word
 
 <textarea id=pad rows=5># command
 
--01 +02.30 +4e-5 0xDeadBeef 0b1101 \ numbers
+\ numbers
+
+-01 +02.30 +4e-5 0xDeadBeef 0b1101 
 
 </textarea>
+
+</div>
 
 <button id=go onclick="go()">GO</button>
 </div>
