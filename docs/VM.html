@@ -29,7 +29,8 @@ button { background: darkslategray; height: 7vmin; }
 
 <textarea id=meta rows=11>// PEG grammar
 
-{ out('Hello') } // init code runs first
+// init code runs first
+{ out('Hello') }
 
 FORTH
   = (( comment 
@@ -45,11 +46,12 @@ number
     { return join(hex) }
   / '0b' bin:[01]+
     { return join(bin) }
-  / pfx:[\+\-]?
-    int:[0-9]+
-    flo:('.' flo:[0-9]* { return flo } )?
-    exp:([eE][\+\-]?[0-9]+)?
-      { return num(pfx,int,flo,exp) }
+  / p:[\+\-]?
+    n:[0-9]+
+    f:('.' flo:[0-9]*
+      { return flo } )?
+    e:([eE][\+\-]?[0-9]+)?
+{ return num(p,n,f,e) }
 
 word
   = w:[a-zA-Z0-9_.\+\-]+
