@@ -29,9 +29,16 @@ function load() {
 	meta.value = PEG
 	pad.value = PAD
 	update()
+	if (navigator.onLine) online(); else offline(); // fix on reload
 }
 
 window.onload = load
+
+function offline() { go.style.borderColor = "darkred" }
+window.onoffline = offline
+
+function  online() { go.style.borderColor = "green"   }
+window.ononline  = online
 
 /// parser helpers
 

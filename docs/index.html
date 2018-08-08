@@ -103,74 +103,13 @@ _ "whitespace"
 </script>
 
 <script src="PEG.js"></script>
+<script src="SYM.js"></script>
 <script>
-
-function gocmd() { INTERPRET(pad.value) }
-
-function clr()  { log.innerText = '' }
-function out(str) { log.innerText += str+'\n' }
-function join(dat) { return dat.join("") }
-
-function errlog(e) {
-	S = 'error:\n'
-	JSON.stringify(e).match(/.{1,40}/g).forEach(function(item,i,arr) {
-		S += item + '\n'
-	})
-	return S 
-}
-
-function INTERPRET(SRC) {
-	clr();
-	sessionStorage[Date()] = SRC
-	try { peg.generate(meta.value).parse(pad.value)	}
-	catch(e) { log.innerText += errlog(e) }
-	
-}
-
-function Sym(T,V) {
-	this.type  = T
-	this.value = V
-	this.attr  = {}
-	this.nest  = []
-}
-
-function Stack(name) { return Sym('stack',name); }
-
-Sym.prototype.push = function(object) { this.nest.push(object) }
-
-Sym.prototype.dump = Sym.prototype.head = function() { return "<"+this.type+":"+this.value+">" }
-
-function Voc(name)   { return Sym('voc',name);   }
-
-var S = new Stack('data') 
-
-var W = Voc('global')
-
-function swipe_upd() {
-	//meta.style.width  = meta.scrollWidth +1 + "px"
-	meta.style.height = meta.scrollHeight + "px"
-}
 
 function update() {
 	stack.innerText = S.dump()
 	words.innerText = W.dump()
 	swipe_upd()
 }
-
-function keydown(event) {
-	if (event.ctrlKey & event.key == 'Enter') gocmd()
-}
-
-window.onload = function() {
-	document.body.onkeydown = keydown
-	if (navigator.onLine) online(); else offline(); // fix on reload
-	update();
-}
-
-function offline() { go.style.borderColor = "darkred" }
-window.onoffline = offline
-
-function  online() { go.style.borderColor = "green"   }
-window.ononline  = online
 
 </script>
