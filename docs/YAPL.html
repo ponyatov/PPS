@@ -61,7 +61,7 @@ function Qbject(V) {
 		return S
 	}
 	// left pad for tree form
-	this.pad	= function(N) { return '\n' + '\t'.repeat(N) }
+	this.pad	= function(N) { return '\n' + '    '.repeat(N) }
 }
 
 function Primitive(V)	{ Qbject.call(this,V) }
@@ -81,12 +81,8 @@ var S = new Stack('data')
 S.push(new Int(1.23))
 S.push(new Num(1.23))
 
-function update() {
-	stack.innerText = S.dump()
-}
+function update() { stack.innerText = S.dump() }
 
-window.onload = function() {
-	update()
-}
+window.onload = function() { update() }
 
 </script>
