@@ -8,8 +8,26 @@
 * {
 	background: black; color: lightgreen;
 	font-family: monospace, monospace; font-size: 2vh;
+	margin: 0; 
 }
+
+textarea { width:100%; caret-color:red; }
+button   { width:100%; background: darkslategray; height: 11vmin; }
+
+#stack,#pad { color: cyan; }
+
+#cmd { position: absolute; bottom:0; width:100%; }
 
 </style>
 
+<pre id=log># log
 See more at <a href="https://ponyatov.quora.com/YAPL-Yet-Another-Programming-Language-script-engine-in-JavaScript">quora</a>.
+</pre>
+
+<pre id=stack>stack:data</pre>
+
+<div id=cmd>
+<textarea id=meta rows=11>// PEG grammar</textarea>
+<textarea id=pad rows=5># command </textarea>
+<button>GO</button>
+</div>
