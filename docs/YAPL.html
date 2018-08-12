@@ -31,3 +31,62 @@ See more at <a href="https://ponyatov.quora.com/YAPL-Yet-Another-Programming-Lan
 <textarea id=pad rows=5># command </textarea>
 <button>GO</button>
 </div>
+
+<script src=PEG.js></script>
+
+<script>
+
+// generic base object: constructor from <tag:value>
+function Qbject(V) {
+	
+	// object class/type in simple string form
+	this.type	= this.constructor.name.toLowerCase()
+	// single value
+	this.value	= V
+	
+	// attr{}ibutes
+	this.attr	= {}
+	
+	// nest[]ed objects
+	this.nest	= []
+	// push object to nested as a stack
+	this.push	= function(o) { this.nest.push(o) ; return this }
+	
+	// short object dump in <T:V> form
+	this.head	= function() { return "<"+this.type+":"+this.value+">" }
+	// dump object in full tree form
+	this.dump	= function(depth=0) {
+		var S = this.pad(depth) + this.head()
+		for (j in this.nest) S += this.nest[j].dump(depth+1)
+		return S
+	}
+	// left pad for tree form
+	this.pad	= function(N) { return '\n' + '\t'.repeat(N) }
+}
+
+function Primitive(V)	{ Qbject.call(this,V) }
+
+function Symbol(V)		{ Primitive.call(this,V) }
+function String(V)		{ Primitive.call(this,V) }
+function Number(V)		{ Primitive.call(this,V) }
+
+function Int(V)			{ return new Number(  parseInt(V)) }
+function Num(V)			{ return new Number(parseFloat(V)) }
+
+function Container(V)	{ Qbject.call(this,V) }
+
+function Stack(V)		{ Container.call(this,V) }
+
+var S = new Stack('data')
+S.push(new Int(1.23))
+S.push(new Num(1.23))
+
+function update() {
+	stack.innerText = S.dump()
+}
+
+window.onload = function() {
+	update()
+}
+
+</script>
