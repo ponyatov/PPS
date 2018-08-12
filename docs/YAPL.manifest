@@ -1,0 +1,9 @@
+{
+	"short_name": "YAPL/js",
+	"name": "Yet Another Programming Language /js",
+	"icons": [ { "src": "hedge64x64.png", "type": "image/png" } ],	
+	"orientation": "portrait",
+	"display": "standalone",
+	"background_color": "black",
+	"theme_color": "black"
+}
