@@ -27,9 +27,19 @@ See more at <a href="https://ponyatov.quora.com/YAPL-Yet-Another-Programming-Lan
 <pre id=stack>stack:data</pre>
 
 <div id=cmd>
-<textarea id=meta rows=11>// PEG grammar</textarea>
+
+<textarea id=meta rows=11>// PEG grammar
+
+{ log.innerText = '' } // init
+
+FORTH "metacompiler" = 
+  token:.+ 
+    { log.innerText = JSON.stringify(token) }
+
+</textarea>
+
 <textarea id=pad rows=5># command </textarea>
-<button>GO</button>
+<button id=go>GO</button>
 </div>
 
 <script src=PEG.js></script>
@@ -83,6 +93,21 @@ S.push(new Num(1.23))
 
 function update() { stack.innerText = S.dump() }
 
-window.onload = function() { update() }
+function process() {
+	// create parser
+	var parser = peg.generate(meta.value)
+	// and run it vith #pad value
+	parser.parse(pad.value)					
+}
+
+function keydown(event) {
+	if (event.ctrlKey & event.key == 'Enter') process()
+}
+
+window.onload = function() {
+	go.onclick = process
+	document.body.onkeydown = keydown
+	update()
+}
 
 </script>
