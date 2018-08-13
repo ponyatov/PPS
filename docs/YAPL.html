@@ -1,0 +1,162 @@
+<title>YAPL/js</title>
+<meta name="theme-color" content="black">
+<link rel="icon" type="image/png" href="hedge64x64.png">
+<link rel="manifest" href="/YAPL.manifest">
+
+<style>
+
+* {
+	background: black; color: lightgreen;
+	font-family: monospace, monospace; font-size: 2vh;
+	margin: 0; 
+}
+
+textarea { width:100%; caret-color:red; }
+button   { width:100%; background: darkslategray; height: 11vmin; }
+
+#stack,#pad { color: cyan; }
+
+#cmd { position: absolute; bottom:0; width:100%; }
+
+</style>
+
+<pre id=log># log
+See more at <a href="https://ponyatov.quora.com/YAPL-Yet-Another-Programming-Language-script-engine-in-JavaScript">quora</a>.
+</pre>
+
+<pre id=stack>stack:data</pre>
+
+<div id=cmd>
+
+<textarea id=meta rows=7>// PEG grammar
+
+{ log.innerText = '' }
+
+FORTH "metacompiler" = (
+  _ / comment  /* drop */
+  / n:number   { out(n) }
+  / w:wordname { out(w) }
+) *
+
+comment = [#\\][^\n]*
+
+_ "drop spaces" = [ \t\r\n]+
+
+wordname = w:[^ \t\r\n]+
+  { return join(w) }
+
+number =
+    '0x' hex:[0-9a-fA-F]+
+      { return 'hex:'+join(hex) }
+  / '0b' hex:[01]+
+      { return 'bin:'+join(hex) }
+  / int:(S N)
+    flo:('.' N)?
+    exp:([eE] S N)?
+    {
+      if (!flo && !exp)
+        return 'int:'+parseInt(
+          join(int))
+      else
+        return 'num:'+parseFloat(
+          join(int)+
+          join(flo)+join(exp))
+    }
+      
+S = [\+\-]? // sign
+N = [0-9]+  // number
+
+</textarea>
+
+<textarea id=pad rows=5> # line comment
+
+-01 +02.30 -4e+56  \ numbers
+0xDeadBeef 0b1101  \ machine 
+
+</textarea>
+<button id=go>GO</button>
+</div>
+
+<script src=PEG.js></script>
+
+<script>
+
+// generic base object: constructor from <tag:value>
+function Qbject(V) {
+	
+	// object class/type in simple string form
+	this.type	= this.constructor.name.toLowerCase()
+	// single value
+	this.value	= V
+	
+	// attr{}ibutes
+	this.attr	= {}
+	
+	// nest[]ed objects
+	this.nest	= []
+	// push object to nested as a stack
+	this.push	= function(o) { this.nest.push(o) ; return this }
+	
+	// short object dump in <T:V> form
+	this.head	= function() { return "<"+this.type+":"+this.value+">" }
+	// dump object in full tree form
+	this.dump	= function(depth=0) {
+		var S = this.pad(depth) + this.head()
+		for (j in this.nest) S += this.nest[j].dump(depth+1)
+		return S
+	}
+	// left pad for tree form
+	this.pad	= function(N) { return '\n' + '    '.repeat(N) }
+}
+
+function Primitive(V)	{ Qbject.call(this,V) }
+
+function Symbol(V)		{ Primitive.call(this,V) }
+function String(V)		{ Primitive.call(this,V) }
+function Number(V)		{ Primitive.call(this,V) }
+
+function Int(V)			{ return new Number(  parseInt(V)) }
+function Num(V)			{ return new Number(parseFloat(V)) }
+
+function Container(V)	{ Qbject.call(this,V) }
+
+function Stack(V)		{ Container.call(this,V) }
+
+var S = new Stack('data')
+S.push(new Int(1.23))
+S.push(new Num(1.23))
+
+function update() { stack.innerText = S.dump() }
+
+function process() {
+	// create parser
+	var parser = peg.generate(meta.value)
+	// and run it vith #pad value
+	parser.parse(pad.value)					
+}
+
+function keydown(event) {
+	if (event.ctrlKey & event.key == 'Enter') process()
+}
+
+window.onload = function() {
+	go.onclick = process
+	document.body.onkeydown = keydown
+	update()
+}
+
+function wrap(some) {
+	var S = '' 
+	JSON.stringify(some)
+		.match(/.{1,44}/g)
+		.forEach(function(item,i,arr)
+			{ S += item + '\n' } )
+	return S	
+}
+
+function out(some) { log.innerText += wrap(some) }
+
+function flat(vector) { return [].concat.apply([],vector) }
+function join(token)  { return flat(token).join('') }
+
+</script>
