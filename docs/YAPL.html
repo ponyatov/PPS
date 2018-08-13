@@ -28,14 +28,14 @@ See more at <a href="https://ponyatov.quora.com/YAPL-Yet-Another-Programming-Lan
 
 <div id=cmd>
 
-<textarea id=meta rows=11>// PEG grammar
+<textarea id=meta rows=7>// PEG grammar
 
-{ log.innerText = '' } // init
+{ log.innerText = '' }
 
 FORTH "metacompiler" = (
-    s:_
-  / c:comment
-  / w:wordname { out(join(w)) }
+  s:_
+/ c:comment
+/ w:wordname { out(join(w)) }
 ) *
 
 comment = [#\\][^\n]*
