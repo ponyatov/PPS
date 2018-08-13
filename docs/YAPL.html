@@ -34,7 +34,7 @@ See more at <a href="https://ponyatov.quora.com/YAPL-Yet-Another-Programming-Lan
 
 FORTH "metacompiler" = (
   _ / comment  /* drop */
-  / n:number   { out(n) }
+  / n:number   { push(n) }
   / w:wordname { out(w) }
 ) *
 
@@ -132,7 +132,9 @@ function process() {
 	// create parser
 	var parser = peg.generate(meta.value)
 	// and run it vith #pad value
-	parser.parse(pad.value)					
+	parser.parse(pad.value)
+	// update web interface 
+	update()
 }
 
 function keydown(event) {
@@ -158,5 +160,6 @@ function out(some) { log.innerText += wrap(some) }
 
 function flat(vector) { return [].concat.apply([],vector) }
 function join(token)  { return flat(token).join('') }
+function push(obj)    { S.push(obj) }
 
 </script>
