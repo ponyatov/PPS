@@ -32,13 +32,26 @@ See more at <a href="https://ponyatov.quora.com/YAPL-Yet-Another-Programming-Lan
 
 { log.innerText = '' } // init
 
-FORTH "metacompiler" = 
-  token:.+ 
-    { log.innerText = JSON.stringify(token) }
+FORTH "metacompiler" = (
+    s:_
+  / c:comment
+  / w:wordname { out(join(w)) }
+) *
+
+comment = [#\\][^\n]*
+
+_ "drop spaces" = [ \t\r\n]+
+
+wordname = [^ \t\r\n]+
 
 </textarea>
 
-<textarea id=pad rows=5># command </textarea>
+<textarea id=pad rows=5> # line comment
+
+-01 +02.30 -4e+56  \ numbers
+0xDeadBeef 0b1101  \ machine 
+
+</textarea>
 <button id=go>GO</button>
 </div>
 
@@ -109,5 +122,19 @@ window.onload = function() {
 	document.body.onkeydown = keydown
 	update()
 }
+
+function wrap(some) {
+	var S = '' 
+	JSON.stringify(some)
+		.match(/.{1,44}/g)
+		.forEach(function(item,i,arr)
+			{ S += item + '\n' } )
+	return S	
+}
+
+function out(some) { log.innerText += wrap(some) }
+
+function join(token) { return token.join('') }
+
 
 </script>
