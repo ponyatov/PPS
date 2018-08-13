@@ -53,14 +53,15 @@ number =
   / int:(S N)
     flo:('.' N)?
     exp:([eE] S N)?
-      {
-        if (!flo && !exp)
-          return 'int:'+parseInt(
-            join(int))
-        else
-          return 'num:'+parseFloat(
-            join(int)+join(flo)+join(exp))
-      }
+    {
+      if (!flo && !exp)
+        return 'int:'+parseInt(
+          join(int))
+      else
+        return 'num:'+parseFloat(
+          join(int)+
+          join(flo)+join(exp))
+    }
       
 S = [\+\-]? // sign
 N = [0-9]+  // number
