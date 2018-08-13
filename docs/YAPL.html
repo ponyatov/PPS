@@ -33,16 +33,37 @@ See more at <a href="https://ponyatov.quora.com/YAPL-Yet-Another-Programming-Lan
 { log.innerText = '' }
 
 FORTH "metacompiler" = (
-  s:_
-/ c:comment
-/ w:wordname { out(join(w)) }
+  _ / comment  /* drop */
+  / n:number   { out(n) }
+  / w:wordname { out(w) }
 ) *
 
 comment = [#\\][^\n]*
 
 _ "drop spaces" = [ \t\r\n]+
 
-wordname = [^ \t\r\n]+
+wordname = w:[^ \t\r\n]+
+  { return join(w) }
+
+number =
+    '0x' hex:[0-9a-fA-F]+
+      { return 'hex:'+join(hex) }
+  / '0b' hex:[01]+
+      { return 'bin:'+join(hex) }
+  / int:(S N)
+    flo:('.' N)?
+    exp:([eE] S N)?
+      {
+        if (!flo && !exp)
+          return 'int:'+parseInt(
+            join(int))
+        else
+          return 'num:'+parseFloat(
+            join(int)+join(flo)+join(exp))
+      }
+      
+S = [\+\-]? // sign
+N = [0-9]+  // number
 
 </textarea>
 
@@ -134,7 +155,7 @@ function wrap(some) {
 
 function out(some) { log.innerText += wrap(some) }
 
-function join(token) { return token.join('') }
-
+function flat(vector) { return [].concat.apply([],vector) }
+function join(token)  { return flat(token).join('') }
 
 </script>
