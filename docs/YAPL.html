@@ -100,6 +100,13 @@ function Qbject(V) {
 	this.nest	= []
 	// push object to nested as a stack
 	this.push	= function(o) { this.nest.push(o) ; return this }
+	// pop object from stack
+	this.pop	= function() { return this.nest.pop() }
+	
+	// execute object in context = stack
+	this.exec	 = function(context) { context.push(this) }
+	// compile object to context = vector
+	this.compile = function(context) { context.push(this) }
 	
 	// short object dump in <T:V> form
 	this.head	= function() { return "<"+this.type+":"+this.value+">" }
@@ -131,6 +138,10 @@ function Container(V)	{ Qbject.call(this,V) }
 
 function Stack(V)		{ Container.call(this,V) }
 
+function Map(V)			{ Container.call(this,V) }
+
+function Vector(V)		{ Container.call(this,V) }
+
 S = new Stack('data') // global
 S.push(new Int(1.23))
 S.push(new Num(1.23))
@@ -151,6 +162,7 @@ function keydown(event) {
 }
 
 window.onload = function() {
+	init_vocabulary()
 	go.onclick = process
 	document.body.onkeydown = keydown
 	update()
@@ -171,7 +183,16 @@ function flat(vector) { return [].concat.apply([],vector) }
 function join(token)  { return flat(token).join('') }
 function push(obj)    { S.push(obj) }
 
-function doit(obj) { push(obj) }
+COMPILE = false
 
+function doit(obj) {
+	push(obj)
+	if (COMPILE) S.pop().compile(COMPILE)
+	else		 S.pop().exec(S)
+}
+
+function init_vocabulary() {
+	sessionStorage[':'] = new Vector(':')
+}
 
 </script>
