@@ -34,8 +34,8 @@ See more at <a href="https://ponyatov.quora.com/YAPL-Yet-Another-Programming-Lan
 
 FORTH "metacompiler" = (
   _ / comment  /* drop */
-  / n:number   { push(n) }
-  / w:wordname { out(w) }
+  / n:number   { doit(n) }
+  / w:wordname { doit(w) }
 ) *
 
 comment = [#\\][^\n]*
@@ -43,22 +43,21 @@ comment = [#\\][^\n]*
 _ "drop spaces" = [ \t\r\n]+
 
 wordname = w:[^ \t\r\n]+
-  { return join(w) }
+  { return new Sym(join(w)) }
 
 number =
-    '0x' hex:[0-9a-fA-F]+
-      { return 'hex:'+join(hex) }
-  / '0b' hex:[01]+
-      { return 'bin:'+join(hex) }
+    pfx:'0x' hex:[0-9a-fA-F]+
+    { return new Hex(pfx+join(hex)) }
+  / pfx:'0b' bin:[01]+
+    { return new Bin(pfx+join(bin)) }
   / int:(S N)
     flo:('.' N)?
     exp:([eE] S N)?
     {
       if (!flo && !exp)
-        return 'int:'+parseInt(
-          join(int))
+        return new Int(join(int))
       else
-        return 'num:'+parseFloat(
+        return new Num(
           join(int)+
           join(flo)+join(exp))
     }
@@ -71,7 +70,12 @@ N = [0-9]+  // number
 <textarea id=pad rows=5> # line comment
 
 -01 +02.30 -4e+56  \ numbers
-0xDeadBeef 0b1101  \ machine 
+0xDeadBeef 0b1101  \ machine
+
+undefined_word
+
+: none ;
+: recurse none recurse none ;
 
 </textarea>
 <button id=go>GO</button>
@@ -101,9 +105,9 @@ function Qbject(V) {
 	this.head	= function() { return "<"+this.type+":"+this.value+">" }
 	// dump object in full tree form
 	this.dump	= function(depth=0) {
-		var S = this.pad(depth) + this.head()
-		for (j in this.nest) S += this.nest[j].dump(depth+1)
-		return S
+		var T = this.pad(depth) + this.head()
+		for (j in this.nest) T += this.nest[j].dump(depth+1)
+		return T
 	}
 	// left pad for tree form
 	this.pad	= function(N) { return '\n' + '    '.repeat(N) }
@@ -111,18 +115,23 @@ function Qbject(V) {
 
 function Primitive(V)	{ Qbject.call(this,V) }
 
-function Symbol(V)		{ Primitive.call(this,V) }
-function String(V)		{ Primitive.call(this,V) }
-function Number(V)		{ Primitive.call(this,V) }
+function Sym(V)		{ Primitive.call(this,V) }
+function Str(V)		{ Primitive.call(this,V) }
 
-function Int(V)			{ return new Number(  parseInt(V)) }
-function Num(V)			{ return new Number(parseFloat(V)) }
+function Num(V)		{ Primitive.call(this,V)
+					  this.value = parseFloat(V) }
+function Int(V)		{ Primitive.call(this,V)
+					  this.value = parseInt(V) }
+function Hex(V)		{ Primitive.call(this,V)
+					  this.value = parseInt(V.substring(2),0x10) }
+function Bin(V)		{ Primitive.call(this,V)
+					  this.value = parseInt(V.substring(2),0x02) }
 
 function Container(V)	{ Qbject.call(this,V) }
 
 function Stack(V)		{ Container.call(this,V) }
 
-var S = new Stack('data')
+S = new Stack('data') // global
 S.push(new Int(1.23))
 S.push(new Num(1.23))
 
@@ -161,5 +170,8 @@ function out(some) { log.innerText += wrap(some) }
 function flat(vector) { return [].concat.apply([],vector) }
 function join(token)  { return flat(token).join('') }
 function push(obj)    { S.push(obj) }
+
+function doit(obj) { push(obj) }
+
 
 </script>
