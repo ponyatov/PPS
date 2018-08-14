@@ -1,0 +1,22 @@
+digraph G {
+    
+    rankdir=LR;
+
+object -> primitive -> sym;
+primitive -> num -> int -> hex;
+int -> bin;
+primitive -> ptr;
+
+object -> container -> stack;
+container -> map;
+container -> vector;
+container -> queue;
+
+object -> active -> vm;
+active -> cmd;
+active -> op;
+active -> fn;
+
+active -> vector;
+
+}
