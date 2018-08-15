@@ -72,7 +72,7 @@ N = [0-9]+  // number
 <textarea id=pad rows=5> # line comment
 
 -01 +02.30 -4e+56  \ numbers
-0xDeadBeef 0b1101  ( machine ) .
+0xDeadBeef 0b1101  ( machine ) ? .
 
 undefined_word
 
@@ -110,6 +110,8 @@ function Qbject(V) {
 	this.push	= function(obj) { this.nest.push(obj) ; return this }
 	// pop object from stack
 	this.pop	= function() { return this.nest.pop() }
+	// clean stack
+	this.dropall = function() { this.nest = [] }
 	
 	// execute object in context = stack
 	this.exec	 = function(context) { context.push(this) }
@@ -131,7 +133,18 @@ function Qbject(V) {
 
 function Primitive(V)	{ Qbject.call(this,V) }
 
-function Sym(V)		{ Primitive.call(this,V) }
+function Sym(V)		{
+	Primitive.call(this,V)
+	this.exec = function() {
+		// lookup in vocabulary
+		var body = W.get(V)
+		// execute found body
+		if (body) body.exec()
+		// or fallback: push symbol on stack itself
+		else      S.push(this)
+	}
+}
+
 function Str(V)		{ Primitive.call(this,V) }
 
 function Num(V)		{ Primitive.call(this,V)
@@ -150,6 +163,13 @@ function Stack(V)		{ Container.call(this,V) }
 function Map(V)			{ Container.call(this,V) }
 
 function Vector(V)		{ Container.call(this,V) }
+
+//active objects has executable semantics
+function Active(V)	{ Qbject.call(this,V) }
+
+// JS function wrapper as virtual machine command
+function Cmd(V,F)	{ Active.call(this,V) ; this.exec = F }
+
 
 S = new Stack('data') // global
 S.push(new Int(1.23))
@@ -194,16 +214,20 @@ function push(obj)    { S.push(obj) }
 COMPILE = false
 
 function doit(obj) {
-	push(obj)
-	if (COMPILE) S.pop().compile(COMPILE)
-	else		 S.pop().exec(S)
+	if (COMPILE) obj.compile(COMPILE)
+	else		 obj.exec(S)
 }
 
 W = new Map('vocabulary')
 
 function init_vocabulary() {
-	W.set(':', new Vector(':'))
-	console.log(W.dump())
+	// clear stack
+	// (use at end of processing block for cleanup)
+	W.set('.', new Cmd('.',function() {
+		S.dropall() }))
+	// dump data stack to log
+	W.set('?', new Cmd('?',function() {
+		log.innerText += S.dump() ; update() }))
 }
 
 </script>
