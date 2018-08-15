@@ -38,7 +38,9 @@ FORTH "metacompiler" = (
   / w:wordname { doit(w) }
 ) *
 
-comment = [#\\][^\n]*
+comment =
+    [#\\][^\n]*   // line
+  / '(' [^)]* ')' // block
 
 _ "drop spaces" = [ \t\r\n]+
 
@@ -70,7 +72,7 @@ N = [0-9]+  // number
 <textarea id=pad rows=5> # line comment
 
 -01 +02.30 -4e+56  \ numbers
-0xDeadBeef 0b1101  \ machine
+0xDeadBeef 0b1101  ( machine ) .
 
 undefined_word
 
@@ -95,11 +97,17 @@ function Qbject(V) {
 	
 	// attr{}ibutes
 	this.attr	= {}
+	// assign attribute
+	this.set	= function(key,obj) { this.attr[key] = obj; }
+	// get attribute
+	this.get	= function(key) { return this.attr[key] }
+	// get list of attributes
+	this.keys	= function() { return Object.keys(this.attr) }
 	
 	// nest[]ed objects
 	this.nest	= []
 	// push object to nested as a stack
-	this.push	= function(o) { this.nest.push(o) ; return this }
+	this.push	= function(obj) { this.nest.push(obj) ; return this }
 	// pop object from stack
 	this.pop	= function() { return this.nest.pop() }
 	
@@ -113,6 +121,7 @@ function Qbject(V) {
 	// dump object in full tree form
 	this.dump	= function(depth=0) {
 		var T = this.pad(depth) + this.head()
+		for (i in this.attr) T += this.attr[i].dump(depth+1,prefix=i)
 		for (j in this.nest) T += this.nest[j].dump(depth+1)
 		return T
 	}
@@ -169,7 +178,6 @@ window.onload = function() {
 }
 
 function wrap(some) {
-	var S = '' 
 	JSON.stringify(some)
 		.match(/.{1,44}/g)
 		.forEach(function(item,i,arr)
@@ -191,8 +199,11 @@ function doit(obj) {
 	else		 S.pop().exec(S)
 }
 
+W = new Map('vocabulary')
+
 function init_vocabulary() {
-	sessionStorage[':'] = new Vector(':')
+	W.set(':', new Vector(':'))
+	console.log(W.dump())
 }
 
 </script>
